@@ -34,4 +34,9 @@ public class SubmissionServiceImpl implements SubmissionService {
     public Optional<Submission> getSubmissionById(String id) {
         return submissionRepository.findById(id);
     }
+
+    @Override
+    public List<Submission> getSubmissionsByStatus(String status) {
+        return submissionRepository.findByStatus(status);
+    }
 }

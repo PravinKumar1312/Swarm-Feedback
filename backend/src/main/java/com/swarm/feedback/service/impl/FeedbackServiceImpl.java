@@ -29,6 +29,18 @@ public class FeedbackServiceImpl implements FeedbackService {
         return feedbackRepository.findByReviewerUserId(reviewerId);
     }
 
+    @Autowired
+    private com.swarm.feedback.repository.SubmissionRepository submissionRepository;
+
+    @Override
+    public List<Feedback> getFeedbackReceivedByUserId(String userId) {
+        List<com.swarm.feedback.model.Submission> submissions = submissionRepository.findByOwnerUserId(userId);
+        List<String> submissionIds = submissions.stream()
+                .map(com.swarm.feedback.model.Submission::getId)
+                .collect(java.util.stream.Collectors.toList());
+        return feedbackRepository.findBySubmissionIdIn(submissionIds);
+    }
+
     @Override
     public List<Feedback> getAllFeedback() {
         return feedbackRepository.findAll();

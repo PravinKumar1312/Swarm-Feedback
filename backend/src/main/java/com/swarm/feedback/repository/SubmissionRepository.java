@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface SubmissionRepository extends MongoRepository<Submission, String> {
     List<Submission> findByOwnerUserId(String ownerUserId);
+
+    List<Submission> findByStatus(String status);
 }

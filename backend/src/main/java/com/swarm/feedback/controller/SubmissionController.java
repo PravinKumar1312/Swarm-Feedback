@@ -49,7 +49,20 @@ public class SubmissionController {
 
     @GetMapping
     public List<Submission> getAllSubmissions() {
-        return submissionService.getAllSubmissions();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        boolean isAdmin = false;
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl) {
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            isAdmin = userDetails.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        }
+
+        if (isAdmin) {
+            return submissionService.getAllSubmissions();
+        } else {
+            return submissionService.getSubmissionsByStatus("APPROVED");
+        }
     }
 
     @GetMapping("/my")
@@ -64,6 +77,41 @@ public class SubmissionController {
     public ResponseEntity<?> getSubmissionById(@PathVariable String id) {
         return submissionService.getSubmissionById(id)
                 .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}/status")
+    public ResponseEntity<?> updateSubmissionStatus(@PathVariable String id,
+            @RequestBody java.util.Map<String, String> payload) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        boolean isAdmin = userDetails.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        if (!isAdmin) {
+            return ResponseEntity.status(403).body(new MessageResponse("Error: Admin access required."));
+        }
+
+        String newStatus = payload.get("status");
+        if (newStatus == null
+                || (!newStatus.equals("APPROVED") && !newStatus.equals("REJECTED") && !newStatus.equals("PENDING"))) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Invalid status."));
+        }
+
+        return submissionService.getSubmissionById(id)
+                .map(submission -> {
+                    submission.setStatus(newStatus);
+                    submissionService.createSubmission(submission); // save
+
+                    // Log activity
+                    java.util.Map<String, Object> details = new java.util.HashMap<>();
+                    details.put("submissionId", submission.getId());
+                    details.put("status", newStatus);
+                    activityLogService.logActivity(userDetails.getId(), "UPDATE_SUBMISSION_STATUS", details);
+
+                    return ResponseEntity.ok(new MessageResponse("Submission status updated successfully!"));
+                })
                 .orElse(ResponseEntity.notFound().build());
     }
 }

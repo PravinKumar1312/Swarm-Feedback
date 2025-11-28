@@ -10,5 +10,7 @@ public interface FeedbackService {
 
     List<Feedback> getFeedbackByReviewerId(String reviewerId);
 
+    List<Feedback> getFeedbackReceivedByUserId(String userId);
+
     List<Feedback> getAllFeedback();
 }

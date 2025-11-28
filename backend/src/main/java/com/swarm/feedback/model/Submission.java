@@ -25,7 +25,7 @@ public class Submission {
 
     private List<String> tags;
 
-    private String status = "OPEN";
+    private String status = "PENDING";
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
