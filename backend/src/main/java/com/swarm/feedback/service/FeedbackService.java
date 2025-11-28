@@ -1,25 +1,14 @@
 package com.swarm.feedback.service;
 
-import com.swarm.feedback.entity.Feedback;
-import com.swarm.feedback.repository.FeedbackRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
+import com.swarm.feedback.model.Feedback;
 import java.util.List;
 
-@Service
-public class FeedbackService {
+public interface FeedbackService {
+    Feedback createFeedback(Feedback feedback);
 
-    @Autowired
-    private FeedbackRepository feedbackRepository;
+    List<Feedback> getFeedbackBySubmissionId(String submissionId);
 
-    public Feedback saveFeedback(Feedback feedback) {
-        feedback.setCreatedAt(LocalDateTime.now());
-        return feedbackRepository.save(feedback);
-    }
+    List<Feedback> getFeedbackByReviewerId(String reviewerId);
 
-    public List<Feedback> getAllFeedback() {
-        return feedbackRepository.findAll();
-    }
+    List<Feedback> getAllFeedback();
 }

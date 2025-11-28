@@ -1,9 +1,11 @@
 package com.swarm.feedback.repository;
 
-import com.swarm.feedback.entity.Feedback;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import com.swarm.feedback.model.Feedback;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import java.util.List;
 
-@Repository
-public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
+public interface FeedbackRepository extends MongoRepository<Feedback, String> {
+    List<Feedback> findBySubmissionId(String submissionId);
+
+    List<Feedback> findByReviewerUserId(String reviewerUserId);
 }

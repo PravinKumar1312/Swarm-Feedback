@@ -17,3 +17,11 @@ yarn-error.log
 dist/
 build/
 target/
+
+
+# documentation
+documentation/
+feedback_submission_test_1763993735548.webp
+implementation_plan.md
+walkthrough.md
+task.md

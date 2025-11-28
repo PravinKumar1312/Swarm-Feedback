@@ -1,0 +1,70 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------------------< com.swarm:feedback >-------------------------
+[INFO] Building feedback 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:3.2.5:run (default-cli) > test-compile @ feedback >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ feedback ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ feedback ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ feedback ---
+[INFO] skip non existing resourceDirectory C:\Users\pk257\Desktop\New Folder\Anti-Gravity\Swarm-Feedback\backend\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ feedback ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] <<< spring-boot:3.2.5:run (default-cli) < test-compile @ feedback <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:3.2.5:run (default-cli) @ feedback ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.2.5)
+
+2025-11-27T19:20:03.921+05:30  INFO 17564 --- [feedback] [           main] com.swarm.feedback.FeedbackApplication   : Starting FeedbackApplication using Java 17.0.12 with PID 17564 (C:\Users\pk257\Desktop\New Folder\Anti-Gravity\Swarm-Feedback\backend\target\classes started by pk257 in C:\Users\pk257\Desktop\New Folder\Anti-Gravity\Swarm-Feedback\backend)
+2025-11-27T19:20:03.924+05:30  INFO 17564 --- [feedback] [           main] com.swarm.feedback.FeedbackApplication   : No active profile set, falling back to 1 default profile: "default"
+2025-11-27T19:20:04.682+05:30  INFO 17564 --- [feedback] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2025-11-27T19:20:04.769+05:30  INFO 17564 --- [feedback] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 81 ms. Found 4 MongoDB repository interfaces.
+2025-11-27T19:20:05.422+05:30  INFO 17564 --- [feedback] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8081 (http)
+2025-11-27T19:20:05.434+05:30  INFO 17564 --- [feedback] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-27T19:20:05.434+05:30  INFO 17564 --- [feedback] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.20]
+2025-11-27T19:20:05.510+05:30  INFO 17564 --- [feedback] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-27T19:20:05.511+05:30  INFO 17564 --- [feedback] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1543 ms
+2025-11-27T19:20:05.690+05:30  INFO 17564 --- [feedback] [           main] org.mongodb.driver.client                : MongoClient with metadata {"driver": {"name": "mongo-java-driver|sync|spring-boot", "version": "4.11.2"}, "os": {"type": "Windows", "name": "Windows 11", "architecture": "amd64", "version": "10.0"}, "platform": "Java/Oracle Corporation/17.0.12+8-LTS-286"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, transportSettings=null, streamFactoryFactory=null, commandListeners=[], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, CollectionCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, EnumCodecProvider{}, com.mongodb.client.model.mql.ExpressionCodecProvider@25be445f, com.mongodb.Jep395RecordCodecProvider@5d1b1c2a, com.mongodb.KotlinCodecProvider@6397248c]}, loggerSettings=LoggerSettings{maxDocumentLength=1000}, clusterSettings={hosts=[localhost:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='15 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, proxySettings=ProxySettings{host=null, port=null, username=null, password=null}}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, proxySettings=ProxySettings{host=null, port=null, username=null, password=null}}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=JAVA_LEGACY, serverApi=null, autoEncryptionSettings=null, dnsClient=null, inetAddressResolver=null, contextProvider=null}
+2025-11-27T19:20:05.714+05:30  INFO 17564 --- [feedback] [localhost:27017] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=27, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=21246000}
+2025-11-27T19:20:06.636+05:30  INFO 17564 --- [feedback] [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@333d44f6, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@350bbd5d, org.springframework.security.web.context.SecurityContextHolderFilter@ee2ae9a, org.springframework.security.web.header.HeaderWriterFilter@7910f355, org.springframework.web.filter.CorsFilter@3c3e363, org.springframework.security.web.authentication.logout.LogoutFilter@15d88c10, com.swarm.feedback.security.jwt.AuthTokenFilter@46f73ffa, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@26994c6a, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@3cd46491, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@16c5b50a, org.springframework.security.web.session.SessionManagementFilter@1f39269d, org.springframework.security.web.access.ExceptionTranslationFilter@41ece227, org.springframework.security.web.access.intercept.AuthorizationFilter@44084713]
+2025-11-27T19:20:06.962+05:30  INFO 17564 --- [feedback] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8081 (http) with context path ''
+2025-11-27T19:20:06.976+05:30  INFO 17564 --- [feedback] [           main] com.swarm.feedback.FeedbackApplication   : Started FeedbackApplication in 3.423 seconds (process running for 3.781)
+2025-11-27T19:21:21.337+05:30  INFO 17564 --- [feedback] [nio-8081-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-27T19:21:21.338+05:30  INFO 17564 --- [feedback] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-27T19:21:21.342+05:30  INFO 17564 --- [feedback] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
+2025-11-27T19:21:22.082+05:30 ERROR 17564 --- [feedback] [nio-8081-exec-2] c.s.f.security.jwt.AuthEntryPointJwt     : Unauthorized error: Bad credentials
+2025-11-27T19:21:22.102+05:30 ERROR 17564 --- [feedback] [nio-8081-exec-2] c.s.f.security.jwt.AuthEntryPointJwt     : Unauthorized error: Full authentication is required to access this resource
+2025-11-27T19:21:40.927+05:30 ERROR 17564 --- [feedback] [nio-8081-exec-3] c.s.f.security.jwt.AuthEntryPointJwt     : Unauthorized error: Bad credentials
+2025-11-27T19:21:40.929+05:30 ERROR 17564 --- [feedback] [nio-8081-exec-3] c.s.f.security.jwt.AuthEntryPointJwt     : Unauthorized error: Full authentication is required to access this resource
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  05:23 min
+[INFO] Finished at: 2025-11-27T19:25:24+05:30
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:3.2.5:run (default-cli) on project feedback: Process terminated with exit code: 1 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

@@ -1,0 +1,16 @@
+
+> frontend@0.0.0 lint
+> eslint .
+
+
+C:\Users\pk257\Desktop\New Folder\Anti-Gravity\Swarm-Feedback\frontend\src\components\Login.jsx
+  76:24  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+C:\Users\pk257\Desktop\New Folder\Anti-Gravity\Swarm-Feedback\frontend\src\components\Register.jsx
+  123:82  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+C:\Users\pk257\Desktop\New Folder\Anti-Gravity\Swarm-Feedback\frontend\src\context\AuthContext.jsx
+  1:42  error  'useEffect' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+✖ 3 problems (3 errors, 0 warnings)
+
