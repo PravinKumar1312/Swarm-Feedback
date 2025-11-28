@@ -21,7 +21,13 @@ const SubmissionList = ({ refreshTrigger, onReview }) => {
     const fetchSubmissions = async () => {
         try {
             setLoading(true);
-            const response = await api.get('/submissions');
+            // If user is ONLY a submitter (not a reviewer/admin), show only their submissions
+            // If user is a reviewer or admin, show all submissions
+            const endpoint = (!isReviewer && currentUser?.roles.includes('ROLE_SUBMITTER'))
+                ? '/submissions/my'
+                : '/submissions';
+
+            const response = await api.get(endpoint);
             setSubmissions(response.data || []);
             setError(null);
         } catch (err) {

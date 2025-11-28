@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import api from '../services/api';
 import FeedbackService from '../services/feedback.service';
 import Card from './ui/Card';
 import { MessageSquare, Clock } from 'lucide-react';
@@ -16,10 +17,8 @@ const FeedbackList = ({ refreshTrigger }) => {
     const fetchFeedbacks = async () => {
         try {
             setLoading(true);
-            const response = await FeedbackService.getAllFeedback();
-            // Assuming the backend returns the list directly or in a data property
-            // Adjust based on actual API response structure. 
-            // Spring Boot usually returns the object directly.
+            // Use the new /my endpoint to get relevant feedback for the user
+            const response = await api.get('/feedback/my');
             setFeedbacks(response.data || []);
             setError(null);
         } catch (err) {
