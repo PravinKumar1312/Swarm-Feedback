@@ -16,7 +16,7 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     public Feedback createFeedback(Feedback feedback) {
-        return feedbackRepository.save(feedback);
+        return feedbackRepository.save(java.util.Objects.requireNonNull(feedback));
     }
 
     @Override

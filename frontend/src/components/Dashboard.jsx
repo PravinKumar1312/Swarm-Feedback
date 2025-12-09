@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import FeedbackForm from './FeedbackForm';
 import FeedbackList from './FeedbackList';
 import SubmissionForm from './SubmissionForm';
@@ -49,7 +50,7 @@ const Dashboard = () => {
                         </h1>
                         <div className="flex flex-col items-center gap-2">
                             <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-                                Welcome, <span className="text-white font-semibold">{currentUser?.username}</span>
+                                Welcome, <Link to="/profile" className="text-white font-semibold hover:text-blue-400 transition-colors underline decoration-blue-500/30 underline-offset-4">{currentUser?.username}</Link>
                             </p>
                             <div className="flex gap-2">
                                 {currentUser?.roles.map(role => (

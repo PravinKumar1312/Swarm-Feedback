@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import Card from './ui/Card';
 import FuturisticButton from './ui/FuturisticButton';
@@ -30,9 +31,12 @@ const Register = () => {
 
         try {
             await register(formData.username, formData.email, formData.password, [formData.role]);
+            toast.success('Registration successful! Please login.');
             navigate('/login');
         } catch (err) {
-            setError(err.response?.data?.message || 'Failed to register. Please try again.');
+            const msg = err.response?.data?.message || 'Failed to register. Please try again.';
+            setError(msg);
+            toast.error(msg);
         } finally {
             setLoading(false);
         }

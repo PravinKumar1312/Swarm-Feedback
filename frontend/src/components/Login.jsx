@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import Card from './ui/Card';
 import FuturisticButton from './ui/FuturisticButton';
@@ -22,9 +23,12 @@ const Login = () => {
 
         try {
             await login(username, password);
+            toast.success('Welcome back to the Swarm!');
             navigate('/');
         } catch (err) {
-            setError('Failed to login. Please check your credentials.');
+            const msg = 'Failed to login. Please check your credentials.';
+            setError(msg);
+            toast.error(msg);
             console.error(err);
         } finally {
             setLoading(false);
@@ -90,6 +94,12 @@ const Login = () => {
                                 />
                             </div>
                         </div>
+                        <div className="flex justify-end">
+                            <Link to="/forgot-password" className="text-sm text-blue-400 hover:text-blue-300 transition-colors">
+                                Forgot Password?
+                            </Link>
+                        </div>
+
 
                         <FuturisticButton
                             type="submit"

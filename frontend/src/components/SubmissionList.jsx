@@ -6,7 +6,7 @@ import { FileText, Calendar, Tag } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 
-const SubmissionList = ({ refreshTrigger, onReview }) => {
+const SubmissionList = ({ refreshTrigger, onReview, mode }) => {
     const [submissions, setSubmissions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -21,11 +21,13 @@ const SubmissionList = ({ refreshTrigger, onReview }) => {
     const fetchSubmissions = async () => {
         try {
             setLoading(true);
-            // If user is ONLY a submitter (not a reviewer/admin), show only their submissions
-            // If user is a reviewer or admin, show all submissions
-            const endpoint = (!isReviewer && currentUser?.roles.includes('ROLE_SUBMITTER'))
-                ? '/submissions/my'
-                : '/submissions';
+
+            let endpoint = '/submissions';
+            if (mode === 'my') {
+                endpoint = '/submissions/my';
+            } else if (!isReviewer && currentUser?.roles.includes('ROLE_SUBMITTER')) {
+                endpoint = '/submissions/my';
+            }
 
             const response = await api.get(endpoint);
             setSubmissions(response.data || []);
@@ -38,9 +40,36 @@ const SubmissionList = ({ refreshTrigger, onReview }) => {
         }
     };
 
-    if (loading) return <div className="text-center py-8 text-gray-400">Loading projects...</div>;
+    if (loading) {
+        return (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {[1, 2, 3, 4, 5, 6].map((i) => (
+                    <Card key={i} className="h-48 animate-pulse">
+                        <div className="h-6 bg-white/10 rounded w-3/4 mb-4"></div>
+                        <div className="h-4 bg-white/10 rounded w-full mb-2"></div>
+                        <div className="h-4 bg-white/10 rounded w-5/6 mb-2"></div>
+                        <div className="h-4 bg-white/10 rounded w-1/2 mt-auto"></div>
+                    </Card>
+                ))}
+            </div>
+        );
+    }
     if (error) return <div className="text-center py-8 text-red-400">{error}</div>;
-    if (submissions.length === 0) return <div className="text-center py-8 text-gray-400">No projects found.</div>;
+    if (submissions.length === 0) {
+        return (
+            <div className="text-center py-12 bg-white/5 rounded-xl border border-white/10">
+                <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <FileText size={32} className="text-gray-400" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-2">No Projects Found</h3>
+                <p className="text-gray-400 max-w-md mx-auto">
+                    {mode === 'my'
+                        ? "You haven't submitted any projects yet. Share your work to get feedback!"
+                        : "There are no projects available for review at the moment."}
+                </p>
+            </div>
+        );
+    }
 
     return (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -54,8 +83,11 @@ const SubmissionList = ({ refreshTrigger, onReview }) => {
                     <Card className="h-full hover:bg-white/15 transition-colors duration-300 flex flex-col">
                         <div className="flex items-start justify-between mb-2">
                             <h3 className="text-xl font-bold text-white truncate pr-2">{sub.title}</h3>
-                            <span className={`text-xs px-2 py-1 rounded-full ${sub.status === 'OPEN' ? 'bg-green-500/20 text-green-300' : 'bg-gray-500/20 text-gray-300'}`}>
-                                {sub.status}
+                            <span className={`text-xs px-2 py-1 rounded-full ${sub.status === 'APPROVED' ? 'bg-green-500/20 text-green-300' :
+                                sub.status === 'REJECTED' ? 'bg-red-500/20 text-red-300' :
+                                    'bg-yellow-500/20 text-yellow-300'
+                                }`}>
+                                {sub.status === 'PENDING' ? 'Pending Approval' : sub.status}
                             </span>
                         </div>
 

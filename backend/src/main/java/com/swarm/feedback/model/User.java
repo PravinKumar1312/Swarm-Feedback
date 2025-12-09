@@ -25,9 +25,25 @@ public class User {
 
     private String name;
 
+    private String bio;
+
     private Set<String> roles = new HashSet<>();
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    private Integer age;
+
+    private String regNumber;
+
+    private String profilePic;
+
+    private java.util.List<String> skills;
+
+    private Double ratings;
+
     private LocalDateTime lastLoginAt;
+
+    private String resetPasswordToken;
+
+    private LocalDateTime resetPasswordTokenExpiry;
 }

@@ -22,5 +22,7 @@ public class Feedback {
 
     private Integer rating;
 
+    private String status = "PENDING";
+
     private LocalDateTime createdAt = LocalDateTime.now();
 }

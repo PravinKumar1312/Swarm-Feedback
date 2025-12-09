@@ -17,7 +17,7 @@ public class SubmissionServiceImpl implements SubmissionService {
 
     @Override
     public Submission createSubmission(Submission submission) {
-        return submissionRepository.save(submission);
+        return submissionRepository.save(java.util.Objects.requireNonNull(submission));
     }
 
     @Override
@@ -32,7 +32,7 @@ public class SubmissionServiceImpl implements SubmissionService {
 
     @Override
     public Optional<Submission> getSubmissionById(String id) {
-        return submissionRepository.findById(id);
+        return submissionRepository.findById(java.util.Objects.requireNonNull(id));
     }
 
     @Override

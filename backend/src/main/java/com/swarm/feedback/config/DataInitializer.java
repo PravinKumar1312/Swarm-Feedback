@@ -22,24 +22,9 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Create SysAdmin User if not exists
-        if (!userRepository.existsByUsername("sysadmin")) {
-            User admin = new User();
-            admin.setUsername("sysadmin");
-            admin.setEmail("sysadmin@swarm.com");
-            admin.setPasswordHash(encoder.encode("sysadmin123"));
-            admin.setName("System Administrator");
-
-            Set<String> roles = new HashSet<>();
-            roles.add("ROLE_ADMIN");
-            roles.add("ROLE_SUBMITTER");
-            roles.add("ROLE_REVIEWER");
-            admin.setRoles(roles);
-
-            userRepository.save(admin);
-            System.err.println("SysAdmin user created: sysadmin / sysadmin123");
-        } else {
-            System.err.println("SysAdmin user already exists");
-        }
+        // Default users are no longer created automatically.
+        // The database will be cleared manually or via a separate process if needed.
+        // userRepository.deleteAll(); // Uncomment if you want to wipe the DB on
+        // startup
     }
 }

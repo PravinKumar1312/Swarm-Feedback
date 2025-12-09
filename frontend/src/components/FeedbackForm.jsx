@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { toast } from 'react-hot-toast';
 import FeedbackService from '../services/feedback.service';
 import Card from './ui/Card';
 import Button from './ui/Button';
@@ -9,14 +10,12 @@ const FeedbackForm = ({ onFeedbackSubmit, selectedSubmission }) => {
     const [content, setContent] = useState('');
     const [rating, setRating] = useState(5);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [message, setMessage] = useState(null);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!content.trim()) return;
 
         setIsSubmitting(true);
-        setMessage(null);
 
         try {
             await FeedbackService.createFeedback({
@@ -24,12 +23,12 @@ const FeedbackForm = ({ onFeedbackSubmit, selectedSubmission }) => {
                 comments: content,
                 rating: rating
             });
-            setMessage({ type: 'success', text: 'Feedback submitted successfully!' });
+            toast.success('Feedback submitted successfully!');
             setContent('');
             setRating(5);
             if (onFeedbackSubmit) onFeedbackSubmit();
         } catch (error) {
-            setMessage({ type: 'error', text: 'Failed to submit feedback. Please try again.' });
+            toast.error('Failed to submit feedback. Please try again.');
             console.error('Error submitting feedback:', error);
         } finally {
             setIsSubmitting(false);
@@ -75,20 +74,7 @@ const FeedbackForm = ({ onFeedbackSubmit, selectedSubmission }) => {
                     />
                 </div>
 
-                <AnimatePresence>
-                    {message && (
-                        <motion.div
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            className={`flex items-center gap-2 p-3 rounded-lg ${message.type === 'success' ? 'bg-green-500/20 text-green-200' : 'bg-red-500/20 text-red-200'
-                                }`}
-                        >
-                            {message.type === 'success' ? <CheckCircle size={18} /> : <AlertCircle size={18} />}
-                            <span className="text-sm font-medium">{message.text}</span>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+
 
                 <div className="flex justify-end">
                     <Button type="submit" disabled={isSubmitting || !content.trim()} className="flex items-center gap-2">

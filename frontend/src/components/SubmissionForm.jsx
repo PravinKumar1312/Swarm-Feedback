@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { toast } from 'react-hot-toast';
 import Card from './ui/Card';
 import Button from './ui/Button';
 import { Upload, CheckCircle, AlertCircle } from 'lucide-react';
@@ -11,7 +12,6 @@ const SubmissionForm = ({ onSubmissionCreate }) => {
         fileUrls: [''] // Start with one empty URL field
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [message, setMessage] = useState(null);
 
     const handleUrlChange = (index, value) => {
         const newUrls = [...formData.fileUrls];
@@ -26,7 +26,6 @@ const SubmissionForm = ({ onSubmissionCreate }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
-        setMessage(null);
 
         try {
             // Filter out empty URLs
@@ -36,11 +35,18 @@ const SubmissionForm = ({ onSubmissionCreate }) => {
             };
 
             await api.post('/submissions', cleanedData);
-            setMessage({ type: 'success', text: 'Project submitted successfully!' });
+            import('canvas-confetti').then((confetti) => {
+                confetti.default({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            });
+            toast.success('Project submitted successfully!');
             setFormData({ title: '', description: '', fileUrls: [''] });
             if (onSubmissionCreate) onSubmissionCreate();
         } catch (error) {
-            setMessage({ type: 'error', text: 'Failed to submit project. Please try again.' });
+            toast.error('Failed to submit project. Please try again.');
             console.error('Error submitting project:', error);
         } finally {
             setIsSubmitting(false);
@@ -100,12 +106,7 @@ const SubmissionForm = ({ onSubmissionCreate }) => {
                     </button>
                 </div>
 
-                {message && (
-                    <div className={`flex items-center gap-2 p-3 rounded-lg ${message.type === 'success' ? 'bg-green-500/20 text-green-200' : 'bg-red-500/20 text-red-200'}`}>
-                        {message.type === 'success' ? <CheckCircle size={18} /> : <AlertCircle size={18} />}
-                        <span className="text-sm font-medium">{message.text}</span>
-                    </div>
-                )}
+
 
                 <div className="flex justify-end">
                     <Button type="submit" disabled={isSubmitting} className="flex items-center gap-2">

@@ -31,8 +31,17 @@ const FeedbackList = ({ refreshTrigger }) => {
 
     if (loading) {
         return (
-            <div className="flex justify-center items-center py-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {[1, 2, 3, 4, 5, 6].map((i) => (
+                    <Card key={i} className="h-40 animate-pulse">
+                        <div className="flex gap-1 mb-2">
+                            {[1, 2, 3, 4, 5].map(s => <div key={s} className="w-4 h-4 bg-white/10 rounded-full"></div>)}
+                        </div>
+                        <div className="h-4 bg-white/10 rounded w-full mb-2"></div>
+                        <div className="h-4 bg-white/10 rounded w-5/6 mb-2"></div>
+                        <div className="h-3 bg-white/10 rounded w-1/3 mt-auto"></div>
+                    </Card>
+                ))}
             </div>
         );
     }
@@ -65,12 +74,19 @@ const FeedbackList = ({ refreshTrigger }) => {
                 >
                     <Card className="h-full hover:bg-white/15 transition-colors duration-300">
                         <div className="flex flex-col h-full">
-                            <div className="flex items-center mb-2">
-                                {[...Array(5)].map((_, i) => (
-                                    <span key={i} className={`text-lg ${i < feedback.rating ? 'text-yellow-400' : 'text-gray-600'}`}>
-                                        ★
-                                    </span>
-                                ))}
+                            <div className="flex flex-col mb-2">
+                                {feedback.submissionTitle && (
+                                    <h4 className="font-bold text-white text-lg mb-1 truncate" title={feedback.submissionTitle}>
+                                        {feedback.submissionTitle}
+                                    </h4>
+                                )}
+                                <div className="flex items-center">
+                                    {[...Array(5)].map((_, i) => (
+                                        <span key={i} className={`text-lg ${i < feedback.rating ? 'text-yellow-400' : 'text-gray-600'}`}>
+                                            ★
+                                        </span>
+                                    ))}
+                                </div>
                             </div>
                             <p className="text-gray-200 mb-4 flex-grow whitespace-pre-wrap">{feedback.comments}</p>
                             <div className="flex items-center text-xs text-gray-400 mt-auto pt-4 border-t border-white/10">
