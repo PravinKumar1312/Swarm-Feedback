@@ -25,6 +25,39 @@ export const AuthProvider = ({ children }) => {
         return AuthService.register(username, email, password, roles);
     };
 
+    // Auto-logout Logic
+    React.useEffect(() => {
+        if (!currentUser) return;
+
+        const TIMEOUT_MS = 10 * 60 * 1000; // 10 minutes
+        let activityTimer;
+
+        const resetTimer = () => {
+            if (activityTimer) clearTimeout(activityTimer);
+            activityTimer = setTimeout(() => {
+                // console.log("User inactive for 10 minutes, logging out...");
+                logout();
+            }, TIMEOUT_MS);
+        };
+
+        // Initial start
+        resetTimer();
+
+        // Listeners
+        window.addEventListener('mousemove', resetTimer);
+        window.addEventListener('keydown', resetTimer);
+        window.addEventListener('click', resetTimer);
+        window.addEventListener('scroll', resetTimer);
+
+        return () => {
+            if (activityTimer) clearTimeout(activityTimer);
+            window.removeEventListener('mousemove', resetTimer);
+            window.removeEventListener('keydown', resetTimer);
+            window.removeEventListener('click', resetTimer);
+            window.removeEventListener('scroll', resetTimer);
+        };
+    }, [currentUser]);
+
     return (
         <AuthContext.Provider value={{ currentUser, login, logout, register, loading }}>
             {!loading && children}

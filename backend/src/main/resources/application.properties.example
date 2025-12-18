@@ -1,0 +1,21 @@
+spring.application.name=SwarmFeedback
+server.port=8082
+
+# MongoDB Configuration
+spring.data.mongodb.uri=mongodb://localhost:27017/swarm_feedback_db
+
+# JWT Configuration
+app.jwtSecret=YOUR_SECRET_KEY_HERE
+app.jwtExpirationMs=86400000
+
+# Mail Configuration (Optional)
+spring.mail.host=smtp.example.com
+spring.mail.port=587
+spring.mail.username=your_email@example.com
+spring.mail.password=your_password
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+
+# Logging
+logging.level.org.springframework.security=DEBUG
+logging.level.org.springframework.web=DEBUG

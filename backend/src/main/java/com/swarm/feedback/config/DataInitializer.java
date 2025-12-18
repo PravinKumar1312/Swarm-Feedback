@@ -22,9 +22,17 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Default users are no longer created automatically.
-        // The database will be cleared manually or via a separate process if needed.
-        // userRepository.deleteAll(); // Uncomment if you want to wipe the DB on
-        // startup
+        if (!userRepository.existsByUsername("admin")) {
+            User user = new User();
+            user.setUsername("admin");
+            user.setEmail("admin@example.com");
+            user.setPasswordHash(encoder.encode("admin123"));
+            user.setName("Admin User");
+            Set<String> roles = new HashSet<>();
+            roles.add("ROLE_ADMIN");
+            user.setRoles(roles);
+            userRepository.save(user);
+            System.out.println("Admin user created: admin / admin123");
+        }
     }
 }

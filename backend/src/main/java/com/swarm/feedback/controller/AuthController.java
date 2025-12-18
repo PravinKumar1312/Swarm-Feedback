@@ -14,7 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -67,10 +67,13 @@ public class AuthController {
         // activityLogService.logActivity(userDetails.getId(), "LOGIN", null);
 
         // Update last login time
-        User user = userRepository.findById(userDetails.getId()).orElse(null);
-        if (user != null) {
-            user.setLastLoginAt(java.time.LocalDateTime.now());
-            userRepository.save(user);
+        String userId = userDetails.getId();
+        if (userId != null) {
+            User user = userRepository.findById(userId).orElse(null);
+            if (user != null) {
+                user.setLastLoginAt(java.time.LocalDateTime.now());
+                userRepository.save(user);
+            }
         }
 
         return ResponseEntity.ok(new JwtResponse(jwt,

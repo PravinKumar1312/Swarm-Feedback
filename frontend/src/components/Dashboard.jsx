@@ -50,7 +50,11 @@ const Dashboard = () => {
                         </h1>
                         <div className="flex flex-col items-center gap-2">
                             <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-                                Welcome, <Link to="/profile" className="text-white font-semibold hover:text-blue-400 transition-colors underline decoration-blue-500/30 underline-offset-4">{currentUser?.username}</Link>
+                                Welcome, {isAdmin ? (
+                                    <span className="text-white font-semibold">{currentUser?.username}</span>
+                                ) : (
+                                    <Link to="/profile" className="text-white font-semibold hover:text-blue-400 transition-colors underline decoration-blue-500/30 underline-offset-4">{currentUser?.username}</Link>
+                                )}
                             </p>
                             <div className="flex gap-2">
                                 {currentUser?.roles.map(role => (
@@ -83,30 +87,12 @@ const Dashboard = () => {
                             <section>
                                 <div className="flex items-center gap-4 mb-8">
                                     <h2 className="text-2xl font-bold">
-                                        {(!isReviewer && isSubmitter) ? 'My Projects' : 'Recent Projects'}
+                                        {(!isReviewer && isSubmitter) ? 'My Projects' : 'Projects Feed'}
                                     </h2>
                                     <div className="h-px flex-grow bg-gradient-to-r from-white/20 to-transparent"></div>
                                 </div>
-                                <SubmissionList refreshTrigger={refreshTrigger} onReview={handleReview} />
+                                <SubmissionList refreshTrigger={refreshTrigger} />
                             </section>
-
-                            {isReviewer && (
-                                <section ref={feedbackFormRef}>
-                                    <div className="flex items-center gap-4 mb-8">
-                                        <h2 className="text-2xl font-bold">
-                                            {selectedSubmission ? `Give Feedback on "${selectedSubmission.title}"` : 'Give Feedback (General)'}
-                                        </h2>
-                                        <div className="h-px flex-grow bg-gradient-to-r from-white/20 to-transparent"></div>
-                                    </div>
-                                    <FeedbackForm
-                                        onFeedbackSubmit={() => {
-                                            handleRefresh();
-                                            setSelectedSubmission(null);
-                                        }}
-                                        selectedSubmission={selectedSubmission}
-                                    />
-                                </section>
-                            )}
 
                             <section>
                                 <div className="flex items-center gap-4 mb-8">

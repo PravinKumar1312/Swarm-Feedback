@@ -27,6 +27,8 @@ public class Submission {
 
     private String status = "PENDING";
 
+    private String rejectionReason;
+
     private LocalDateTime createdAt = LocalDateTime.now();
 
     private LocalDateTime updatedAt;

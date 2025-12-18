@@ -101,12 +101,16 @@ public class SubmissionController {
         return submissionService.getSubmissionById(id)
                 .map(submission -> {
                     submission.setStatus(newStatus);
+                    if ("REJECTED".equals(newStatus) && payload.containsKey("rejectionReason")) {
+                        submission.setRejectionReason(payload.get("rejectionReason"));
+                    }
                     submissionService.createSubmission(submission); // save
 
                     // Log activity
                     java.util.Map<String, Object> details = new java.util.HashMap<>();
                     details.put("submissionId", submission.getId());
                     details.put("status", newStatus);
+                    details.put("rejectionReason", payload.get("rejectionReason"));
                     activityLogService.logActivity(userDetails.getId(), "UPDATE_SUBMISSION_STATUS", details);
 
                     return ResponseEntity.ok(new MessageResponse("Submission status updated successfully!"));

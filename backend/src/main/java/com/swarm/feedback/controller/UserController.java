@@ -18,6 +18,12 @@ public class UserController {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    com.swarm.feedback.repository.FeedbackRepository feedbackRepository;
+
+    @Autowired
+    com.swarm.feedback.repository.SubmissionRepository submissionRepository;
+
     @GetMapping
     public ResponseEntity<?> getAllUsers() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -56,6 +62,35 @@ public class UserController {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Error: User not found."));
+
+        // Calculate Ratings dynamically
+        if (user.getRoles() != null && user.getRoles().contains("ROLE_REVIEWER")) {
+            // For Reviewer: Average rating GIVEN
+            java.util.List<com.swarm.feedback.model.Feedback> givenFeedback = feedbackRepository
+                    .findAllByReviewerUserId(userId);
+            if (!givenFeedback.isEmpty()) {
+                double avg = givenFeedback.stream().mapToInt(com.swarm.feedback.model.Feedback::getRating).average()
+                        .orElse(0.0);
+                user.setRatings(avg);
+            }
+        } else {
+            // For Submitter: Average rating RECEIVED across all projects
+            java.util.List<com.swarm.feedback.model.Submission> mySubmissions = submissionRepository
+                    .findByOwnerUserId(userId);
+            if (!mySubmissions.isEmpty()) {
+                java.util.List<String> submissionIds = mySubmissions.stream()
+                        .map(com.swarm.feedback.model.Submission::getId).collect(java.util.stream.Collectors.toList());
+                java.util.List<com.swarm.feedback.model.Feedback> receivedFeedback = feedbackRepository
+                        .findAllBySubmissionIdIn(submissionIds);
+
+                // Filter for approved feedback only
+                double avg = receivedFeedback.stream()
+                        .filter(f -> "APPROVED".equals(f.getStatus()))
+                        .mapToInt(com.swarm.feedback.model.Feedback::getRating)
+                        .average().orElse(0.0);
+                user.setRatings(avg);
+            }
+        }
 
         user.setPasswordHash(null);
         return ResponseEntity.ok(user);
@@ -164,5 +199,29 @@ public class UserController {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Failed to upload file: " + e.getMessage());
         }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable String id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        boolean isAdmin = userDetails.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        if (!isAdmin) {
+            return ResponseEntity.status(403).body("Access denied");
+        }
+
+        if (id == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        if (!userRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        userRepository.deleteById(id);
+        return ResponseEntity.ok(new com.swarm.feedback.payload.response.MessageResponse("User deleted successfully!"));
     }
 }

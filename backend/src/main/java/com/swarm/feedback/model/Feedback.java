@@ -24,5 +24,11 @@ public class Feedback {
 
     private String status = "PENDING";
 
+    private String rejectionReason;
+
+    private String submitterReply;
+
+    private LocalDateTime submitterRepliedAt;
+
     private LocalDateTime createdAt = LocalDateTime.now();
 }

@@ -8,7 +8,16 @@ import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import ImageUpload from './ImageUpload';
 
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+
 const Profile = () => {
+    const { currentUser } = useAuth();
+
+    if (currentUser?.roles && currentUser.roles.includes('ROLE_ADMIN')) {
+        return <Navigate to="/dashboard" replace />;
+    }
+
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [editing, setEditing] = useState(false);

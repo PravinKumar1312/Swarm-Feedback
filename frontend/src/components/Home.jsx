@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import Card from './ui/Card';
 import { Sparkles, Activity, MessageSquare, FileText } from 'lucide-react';
 import api from '../services/api';
+import SubmissionList from './SubmissionList';
 
 const Home = () => {
     const { currentUser } = useAuth();
@@ -80,7 +81,6 @@ const Home = () => {
         const segments = Object.keys(distribution).sort((a, b) => b - a).map(rating => {
             const count = distribution[rating];
             const percent = (count / total) * 100;
-            const segmentStr = `${colors[rating]} 0 ${percent}%`;
             // Simplified gradient approach only works usually for one segment per CSS stop if we accumulate, 
             // but for a true multi-segment we need stops: color start% end%
             // Let's build the gradient string manually
@@ -114,6 +114,26 @@ const Home = () => {
         );
     };
 
+    // Using state to trigger refreshes if needed, though Feed handles its own data
+    const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+    // If strictly reviewer (and not admin/submitter), show the feed directly
+    if (isReviewer && !currentUser?.roles?.includes('ROLE_ADMIN') && !currentUser?.roles?.includes('ROLE_SUBMITTER')) {
+        return (
+            <div className="space-y-8">
+                <header className="mb-8">
+                    <h1 className="text-4xl font-bold text-white mb-2">
+                        Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">{currentUser?.username}</span>
+                    </h1>
+                    <p className="text-gray-400">Here are the latest projects waiting for your review.</p>
+                </header>
+
+                <SubmissionList refreshTrigger={refreshTrigger} />
+            </div>
+        );
+    }
+
+    // Original view for Submitters or mixed roles
     return (
         <div className="space-y-8">
             <header className="mb-8">
@@ -158,20 +178,8 @@ const Home = () => {
                     )}
                 </Card>
 
-                {/* CARD 3: Active Status (Submitter Only) */}
-                {!isReviewer && (
-                    <Card className="p-6 bg-white/5 border-white/10">
-                        <div className="flex items-center gap-4">
-                            <div className="p-3 rounded-full bg-green-500/20 text-green-400">
-                                <Activity size={24} />
-                            </div>
-                            <div>
-                                <p className="text-gray-400 text-sm">Active Status</p>
-                                <p className="text-2xl font-bold text-white">Online</p>
-                            </div>
-                        </div>
-                    </Card>
-                )}
+
+
             </div>
 
             <section>

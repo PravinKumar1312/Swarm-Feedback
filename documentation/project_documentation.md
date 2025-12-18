@@ -53,6 +53,9 @@ A video demonstrating the registration and login flow for new users (Submitter a
 [Clean Install Demo Video](./clean_install_demo.webp)
 
 ## Recent Fixes
-- **Clean State**: Removed default user creation from `DataInitializer`. The system now starts with no users, requiring registration.
-- **Login Issues**: Resolved by fixing CORS configuration in `WebSecurityConfig` and removing conflicting `@CrossOrigin` annotation in `AuthController`.
-- **Database Initialization**: Ensured the database is not automatically seeded with default accounts, adhering to the "no default account" policy.
+- **Clean State**: Removed default user creation from `DataInitializer`. The system now starts with no users.
+- **Login Issues**: Resolved CORS and annotation conflicts.
+- **UI Refinements (Dec 18)**: 
+  - REMOVED "Active Status" card from Submitter dashboard for cleaner UI.
+  - RESTRICTED "Profile" access for Admins (Redirects to dashboard, hidden in menu). Admin should use the "Users" tab to view data.
+- **Ratings**: Implemented feedback rating aggregation for Submitters and Reviewers.

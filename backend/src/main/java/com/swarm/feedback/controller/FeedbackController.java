@@ -75,19 +75,26 @@ public class FeedbackController {
             map.put("reviewerUserId", feedback.getReviewerUserId());
             map.put("comments", feedback.getComments());
             map.put("rating", feedback.getRating());
+            map.put("status", feedback.getStatus());
+            map.put("rejectionReason", feedback.getRejectionReason());
             map.put("createdAt", feedback.getCreatedAt());
 
-            if (feedback.getReviewerUserId() != null) {
-                userRepository.findById(feedback.getReviewerUserId()).ifPresent(user -> {
+            String reviewerId = feedback.getReviewerUserId();
+            if (reviewerId != null) {
+                userRepository.findById(reviewerId).ifPresent(user -> {
                     map.put("reviewerUsername", user.getUsername());
                 });
             }
 
-            if (feedback.getSubmissionId() != null) {
-                submissionRepository.findById(feedback.getSubmissionId()).ifPresent(submission -> {
+            String submissionId = feedback.getSubmissionId();
+            if (submissionId != null) {
+                submissionRepository.findById(submissionId).ifPresent(submission -> {
                     map.put("submissionTitle", submission.getTitle());
                 });
             }
+
+            map.put("submitterReply", feedback.getSubmitterReply());
+            map.put("submitterRepliedAt", feedback.getSubmitterRepliedAt());
 
             return map;
         }).collect(java.util.stream.Collectors.toList());
@@ -119,6 +126,53 @@ public class FeedbackController {
 
         // Remove duplicates if any (though unlikely to overlap unless self-review)
         return feedback.stream().distinct().collect(java.util.stream.Collectors.toList());
+    }
+
+    @PostMapping("/{id}/reply")
+    public ResponseEntity<?> replyToFeedback(@PathVariable String id,
+            @RequestBody java.util.Map<String, String> payload) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof UserDetailsImpl)) {
+            return ResponseEntity.status(401).body(new MessageResponse("Unauthorized"));
+        }
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        return feedbackService.getAllFeedback().stream()
+                .filter(f -> f.getId().equals(id))
+                .findFirst()
+                .map(feedback -> {
+                    // Verify ownership: currently we need to check if the submission belongs to
+                    // this user
+                    String submissionId = feedback.getSubmissionId();
+                    if (submissionId == null) {
+                        return ResponseEntity.status(500)
+                                .body(new MessageResponse("Submission ID not found in feedback."));
+                    }
+                    return submissionRepository.findById(submissionId).map(submission -> {
+                        if (!submission.getOwnerUserId().equals(userDetails.getId())) {
+                            return ResponseEntity.status(403)
+                                    .body(new MessageResponse("Only the project owner can reply to this feedback."));
+                        }
+
+                        String reply = payload.get("reply");
+                        if (reply == null || reply.trim().isEmpty()) {
+                            return ResponseEntity.badRequest().body(new MessageResponse("Reply cannot be empty."));
+                        }
+
+                        feedback.setSubmitterReply(reply);
+                        feedback.setSubmitterRepliedAt(java.time.LocalDateTime.now());
+                        feedbackService.createFeedback(feedback);
+
+                        // Log
+                        java.util.Map<String, Object> details = new java.util.HashMap<>();
+                        details.put("feedbackId", feedback.getId());
+                        details.put("action", "REPLY");
+                        activityLogService.logActivity(userDetails.getId(), "REPLY_TO_FEEDBACK", details);
+
+                        return ResponseEntity.ok(new MessageResponse("Reply submitted successfully!"));
+                    }).orElse(ResponseEntity.notFound().build());
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
@@ -176,12 +230,16 @@ public class FeedbackController {
                 .findFirst()
                 .map(feedback -> {
                     feedback.setStatus(newStatus);
+                    if ("REJECTED".equals(newStatus) && payload.containsKey("rejectionReason")) {
+                        feedback.setRejectionReason(payload.get("rejectionReason"));
+                    }
                     feedbackService.createFeedback(feedback); // save
 
                     // Log activity
                     java.util.Map<String, Object> details = new java.util.HashMap<>();
                     details.put("feedbackId", feedback.getId());
                     details.put("status", newStatus);
+                    details.put("rejectionReason", payload.get("rejectionReason"));
                     activityLogService.logActivity(userDetails.getId(), "UPDATE_FEEDBACK_STATUS", details);
 
                     return ResponseEntity.ok(new MessageResponse("Feedback status updated successfully!"));

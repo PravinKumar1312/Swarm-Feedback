@@ -10,4 +10,9 @@ public interface FeedbackRepository extends MongoRepository<Feedback, String> {
     List<Feedback> findByReviewerUserId(String reviewerUserId);
 
     List<Feedback> findBySubmissionIdIn(List<String> submissionIds);
+
+    // Added to match controller usage
+    List<Feedback> findAllByReviewerUserId(String reviewerUserId);
+
+    List<Feedback> findAllBySubmissionIdIn(List<String> submissionIds);
 }

@@ -12,6 +12,7 @@ import Home from './components/Home';
 import SubmitProject from './components/SubmitProject';
 import History from './components/History';
 import Profile from './components/Profile';
+import ContactHelp from './components/ContactHelp';
 import AdminDashboard from './components/AdminDashboard';
 import { useAuth } from './context/AuthContext';
 
@@ -21,9 +22,24 @@ const DashboardRouter = () => {
   const isAdmin = currentUser?.roles.includes('ROLE_ADMIN');
 
   if (isAdmin) {
-    return <AdminDashboard />;
+    return (
+      <MainLayout>
+        <AdminDashboard />
+      </MainLayout>
+    );
   }
   return <Navigate to="/dashboard" replace />;
+};
+
+// New helper for the /dashboard route
+const DashboardHome = () => {
+  const { currentUser } = useAuth();
+  const isAdmin = currentUser?.roles.includes('ROLE_ADMIN');
+
+  if (isAdmin) {
+    return <AdminDashboard />;
+  }
+  return <Home />;
 };
 
 function App() {
@@ -74,7 +90,7 @@ function App() {
             element={
               <ProtectedRoute>
                 <MainLayout>
-                  <Home />
+                  <DashboardHome />
                 </MainLayout>
               </ProtectedRoute>
             }
@@ -105,6 +121,16 @@ function App() {
               <ProtectedRoute>
                 <MainLayout>
                   <Profile />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/contact-help"
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <ContactHelp />
                 </MainLayout>
               </ProtectedRoute>
             }
