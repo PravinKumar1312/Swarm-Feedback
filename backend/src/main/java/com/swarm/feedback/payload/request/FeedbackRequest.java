@@ -18,4 +18,8 @@ public class FeedbackRequest {
     @Min(1)
     @Max(5)
     private Integer rating;
+
+    private java.util.Map<String, Integer> dimensionRatings;
+
+    private java.util.List<String> tags;
 }

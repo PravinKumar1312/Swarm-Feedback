@@ -22,6 +22,12 @@ public class Feedback {
 
     private Integer rating;
 
+    private java.util.Map<String, Integer> dimensionRatings;
+
+    private java.util.List<String> tags;
+
+    private boolean markedHelpful = false;
+
     private String status = "PENDING";
 
     private String rejectionReason;

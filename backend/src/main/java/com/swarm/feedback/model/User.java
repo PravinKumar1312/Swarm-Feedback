@@ -12,6 +12,11 @@ import java.util.Set;
 @Data
 @Document(collection = "users")
 public class User {
+    private Integer points = 0;
+    private String level = "Bronze";
+    private Set<String> badges = new HashSet<>();
+    private Integer reviewsGiven = 0;
+    private Integer helpfulVotes = 0;
     @Id
     private String id;
 

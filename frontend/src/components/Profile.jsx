@@ -251,7 +251,7 @@ const Profile = () => {
                                                 <h3 className="text-sm font-medium text-gray-500 mb-2 flex items-center gap-2">
                                                     <Mail size={14} /> Email
                                                 </h3>
-                                                <p className="text-lg text-gray-200 break-words font-medium tracking-wide">{user.email}</p>
+                                                <p className="text-lg text-gray-200 truncate font-medium tracking-wide" title={user.email}>{user.email}</p>
                                             </div>
 
                                             <div>
@@ -268,16 +268,21 @@ const Profile = () => {
 
                                             {user.roles && user.roles.includes('ROLE_REVIEWER') ? (
                                                 <div>
-                                                    <h3 className="text-sm font-medium text-gray-500 mb-2">Reviewer Status</h3>
+                                                    <h3 className="text-sm font-medium text-gray-500 mb-2">Reputation</h3>
                                                     <div className="flex flex-col gap-2">
-                                                        <div>
-                                                            <span className="px-3 py-1 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs font-bold uppercase tracking-wider">
-                                                                {reviewerStats.count < 5 ? 'Novice Reviewer' :
-                                                                    reviewerStats.count < 15 ? 'Established Critic' : 'Top Voice'}
+                                                        <div className="flex gap-2 items-center">
+                                                            <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${(user.level === 'Gold') ? 'bg-gradient-to-r from-yellow-400 to-yellow-600 text-black' :
+                                                                    (user.level === 'Silver') ? 'bg-gradient-to-r from-gray-300 to-gray-500 text-black' :
+                                                                        'bg-gradient-to-r from-orange-700 to-orange-500 text-white'
+                                                                }`}>
+                                                                {user.level || 'Bronze'} Level
                                                             </span>
                                                         </div>
-                                                        <p className="text-gray-400 text-sm mt-1">
-                                                            Member since {new Date().getFullYear()}
+                                                        <p className="text-gray-300 text-sm mt-1">
+                                                            Points: <span className="text-blue-400 font-bold">{user.points || 0}</span>
+                                                        </p>
+                                                        <p className="text-gray-300 text-sm">
+                                                            Reviews Given: <span className="font-bold">{user.reviewsGiven || 0}</span>
                                                         </p>
                                                     </div>
                                                 </div>

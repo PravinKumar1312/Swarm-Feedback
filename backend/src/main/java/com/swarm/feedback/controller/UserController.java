@@ -42,6 +42,24 @@ public class UserController {
         }).collect(java.util.stream.Collectors.toList()));
     }
 
+    @GetMapping("/leaderboard")
+    public ResponseEntity<?> getLeaderboard() {
+        java.util.List<User> users = userRepository.findAll();
+        // Sort in memory or use Sort parameter in findAll if available
+        users.sort((a, b) -> (b.getPoints() == null ? 0 : b.getPoints()) - (a.getPoints() == null ? 0 : a.getPoints()));
+
+        java.util.List<java.util.Map<String, Object>> result = users.stream().limit(10).map(u -> {
+            java.util.Map<String, Object> map = new java.util.HashMap<>();
+            map.put("username", u.getUsername());
+            map.put("points", u.getPoints() == null ? 0 : u.getPoints());
+            map.put("level", u.getLevel());
+            map.put("profilePic", u.getProfilePic());
+            return map;
+        }).collect(java.util.stream.Collectors.toList());
+
+        return ResponseEntity.ok(result);
+    }
+
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

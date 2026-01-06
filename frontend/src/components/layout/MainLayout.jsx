@@ -1,9 +1,57 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Sidebar from './Sidebar';
 import Background3D from '../ui/Background3D';
+import { useAuth } from '../../context/AuthContext';
+import SockJS from 'sockjs-client';
+import { Stomp } from '@stomp/stompjs';
+import { toast } from 'react-hot-toast';
 
 const MainLayout = ({ children }) => {
-    const [isCollapsed, setIsCollapsed] = React.useState(true); // Default collapsed as per request
+    const [isCollapsed, setIsCollapsed] = React.useState(true);
+    const { currentUser, refreshUser } = useAuth();
+
+    useEffect(() => {
+        let stompClient = null;
+        if (currentUser?.id) {
+            // NOTE: In production, URL should be dynamic
+            const socket = new SockJS('http://localhost:8082/ws/notifications');
+            stompClient = Stomp.over(socket);
+            stompClient.debug = () => { }; // Disable debug logs
+
+            stompClient.connect({}, () => {
+                stompClient.subscribe('/topic/user/' + currentUser.id, (message) => {
+                    // Check if message body is JSON
+                    let msg = "You have received new feedback!";
+                    try {
+                        // backend sends: Map("type", "NEW_FEEDBACK", "submissionId", ...)
+                        // STOMP body is stringified JSON
+                        const body = JSON.parse(message.body);
+                        if (body.type === 'NEW_FEEDBACK') {
+                            msg = "New feedback received on your project!";
+                        }
+                    } catch (e) {
+                        // ignore
+                    }
+
+                    refreshUser(); // Update submitter stats instantly
+
+                    toast(msg, {
+                        icon: '🔔',
+                        style: {
+                            borderRadius: '10px',
+                            background: '#333',
+                            color: '#fff',
+                        },
+                        duration: 5000
+                    });
+                });
+            });
+        }
+
+        return () => {
+            if (stompClient && stompClient.connected) stompClient.disconnect();
+        }
+    }, [currentUser]);
 
     return (
         <div className="min-h-screen text-white selection:bg-purple-500/30 relative flex">

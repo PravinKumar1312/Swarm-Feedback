@@ -8,13 +8,21 @@ import { Sparkles, LogOut } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import FuturisticButton from './ui/FuturisticButton';
 import Background3D from './ui/Background3D';
+import FuturisticButton from './ui/FuturisticButton';
+import Background3D from './ui/Background3D';
 import AdminDashboard from './AdminDashboard';
+import Insights from './Insights';
+import Leaderboard from './Leaderboard';
+import { useLocation } from 'react-router-dom';
 
 const Dashboard = () => {
     const [refreshTrigger, setRefreshTrigger] = useState(0);
     const [selectedSubmission, setSelectedSubmission] = useState(null);
     const feedbackFormRef = React.useRef(null);
     const { currentUser, logout } = useAuth();
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const activeTab = searchParams.get('tab') || 'home';
 
     const handleRefresh = () => {
         setRefreshTrigger(prev => prev + 1);
@@ -78,31 +86,53 @@ const Dashboard = () => {
                         <AdminDashboard />
                     ) : (
                         <>
-                            {isSubmitter && (
-                                <section>
-                                    <SubmissionForm onSubmissionCreate={handleRefresh} />
-                                </section>
+                            {/* Tabs */}
+                            <div className="flex gap-4 mb-8 overflow-x-auto pb-2">
+                                <Link to="/dashboard?tab=home" className={`px-4 py-2 rounded-lg font-medium transition-colors ${activeTab === 'home' ? 'bg-blue-600 text-white' : 'bg-white/5 text-gray-400 hover:bg-white/10'}`}>
+                                    Feed
+                                </Link>
+                                {isSubmitter && (
+                                    <Link to="/dashboard?tab=insights" className={`px-4 py-2 rounded-lg font-medium transition-colors ${activeTab === 'insights' ? 'bg-blue-600 text-white' : 'bg-white/5 text-gray-400 hover:bg-white/10'}`}>
+                                        Insights
+                                    </Link>
+                                )}
+                                <Link to="/dashboard?tab=leaderboard" className={`px-4 py-2 rounded-lg font-medium transition-colors ${activeTab === 'leaderboard' ? 'bg-blue-600 text-white' : 'bg-white/5 text-gray-400 hover:bg-white/10'}`}>
+                                    Leaderboard
+                                </Link>
+                            </div>
+
+                            {activeTab === 'home' && (
+                                <>
+                                    {isSubmitter && (
+                                        <section>
+                                            <SubmissionForm onSubmissionCreate={handleRefresh} />
+                                        </section>
+                                    )}
+
+                                    <section>
+                                        <div className="flex items-center gap-4 mb-8">
+                                            <h2 className="text-2xl font-bold">
+                                                {(!isReviewer && isSubmitter) ? 'My Projects' : 'Projects Feed'}
+                                            </h2>
+                                            <div className="h-px flex-grow bg-gradient-to-r from-white/20 to-transparent"></div>
+                                        </div>
+                                        <SubmissionList refreshTrigger={refreshTrigger} />
+                                    </section>
+
+                                    <section>
+                                        <div className="flex items-center gap-4 mb-8">
+                                            <h2 className="text-2xl font-bold">
+                                                {(!isReviewer && isSubmitter) ? 'My Feedback' : 'Recent Feedback'}
+                                            </h2>
+                                            <div className="h-px flex-grow bg-gradient-to-r from-white/20 to-transparent"></div>
+                                        </div>
+                                        <FeedbackList refreshTrigger={refreshTrigger} />
+                                    </section>
+                                </>
                             )}
 
-                            <section>
-                                <div className="flex items-center gap-4 mb-8">
-                                    <h2 className="text-2xl font-bold">
-                                        {(!isReviewer && isSubmitter) ? 'My Projects' : 'Projects Feed'}
-                                    </h2>
-                                    <div className="h-px flex-grow bg-gradient-to-r from-white/20 to-transparent"></div>
-                                </div>
-                                <SubmissionList refreshTrigger={refreshTrigger} />
-                            </section>
-
-                            <section>
-                                <div className="flex items-center gap-4 mb-8">
-                                    <h2 className="text-2xl font-bold">
-                                        {(!isReviewer && isSubmitter) ? 'My Feedback' : 'Recent Feedback'}
-                                    </h2>
-                                    <div className="h-px flex-grow bg-gradient-to-r from-white/20 to-transparent"></div>
-                                </div>
-                                <FeedbackList refreshTrigger={refreshTrigger} />
-                            </section>
+                            {activeTab === 'insights' && <Insights />}
+                            {activeTab === 'leaderboard' && <Leaderboard />}
                         </>
                     )}
                 </main>

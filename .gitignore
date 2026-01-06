@@ -11,6 +11,7 @@ build/
 bin/
 out/
 target/
+**/target/
 
 # Frontend
 coverage/
@@ -38,9 +39,10 @@ coverage/
 .env.production.local
 .env*.local
 *.env
-application.properties
-application-*.properties
-!application.properties.example
+# Keep application.properties in git if it doesn't contain production secrets
+# application.properties
+# application-*.properties
+# !application.properties.example
 *.key
 *.pem
 *.crt
@@ -97,6 +99,13 @@ tmp/
 documentation/*.webp
 # If you want to keep the diagrams but ignore raw recordings:
 # documentation/recordings/ 
+
+# --- Uploads (User Content) ---
+uploads/
+**/uploads/
+help-uploads/
+**/help-uploads/
+backend/uploads/
 
 # --- AI/Agent files ---
 .gemini/

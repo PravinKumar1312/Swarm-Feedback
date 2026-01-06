@@ -13,6 +13,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+
 import java.util.List;
 
 @RestController
@@ -31,7 +33,11 @@ public class FeedbackController {
     @Autowired
     private com.swarm.feedback.repository.UserRepository userRepository;
 
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+
     @PostMapping
+    @SuppressWarnings("null") // Suppress IDE null analysis warnings as inputs are validated
     public ResponseEntity<?> createFeedback(@Valid @RequestBody FeedbackRequest feedbackRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String reviewerId = "anonymous";
@@ -49,6 +55,8 @@ public class FeedbackController {
         feedback.setReviewerUserId(reviewerId);
         feedback.setComments(feedbackRequest.getComments());
         feedback.setRating(feedbackRequest.getRating());
+        feedback.setDimensionRatings(feedbackRequest.getDimensionRatings());
+        feedback.setTags(feedbackRequest.getTags());
         feedback.setStatus(isAdmin ? "APPROVED" : "PENDING");
 
         Feedback savedFeedback = feedbackService.createFeedback(feedback);
@@ -60,7 +68,44 @@ public class FeedbackController {
             details.put("submissionId", savedFeedback.getSubmissionId());
             details.put("rating", savedFeedback.getRating());
             activityLogService.logActivity(reviewerId, "GIVE_FEEDBACK", details);
+
+            // Reputation Logic
+            userRepository.findById(reviewerId).ifPresent(reviewer -> {
+                reviewer.setPoints(reviewer.getPoints() + 5);
+                reviewer.setReviewsGiven(reviewer.getReviewsGiven() + 1);
+
+                // Simple Level Logic
+                if (reviewer.getPoints() >= 500)
+                    reviewer.setLevel("Gold");
+                else if (reviewer.getPoints() >= 100)
+                    reviewer.setLevel("Silver");
+                else
+                    reviewer.setLevel("Bronze");
+
+                userRepository.save(reviewer);
+            });
         }
+
+        // Real-time Notification & Submitter Score Update
+        submissionRepository.findById(savedFeedback.getSubmissionId()).ifPresent(submission -> {
+            String ownerId = submission.getOwnerUserId();
+
+            // Update Submitter Stats
+            userRepository.findById(ownerId).ifPresent(submitter -> {
+                java.util.List<Feedback> allReceived = feedbackService.getFeedbackReceivedByUserId(ownerId);
+                double avg = allReceived.stream()
+                        .filter(f -> "APPROVED".equals(f.getStatus()))
+                        .mapToInt(Feedback::getRating)
+                        .average()
+                        .orElse(0.0);
+                submitter.setRatings(avg);
+                userRepository.save(submitter);
+            });
+
+            // WebSocket Notification
+            messagingTemplate.convertAndSend("/topic/user/" + ownerId,
+                    java.util.Map.of("type", "NEW_FEEDBACK", "submissionId", submission.getId()));
+        });
 
         return ResponseEntity.ok(new MessageResponse("Feedback submitted successfully!"));
     }
