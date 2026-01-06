@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8082/api';
+// Use env var if present, otherwise fall back to localhost for local dev
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8082/api';
 
 const api = axios.create({
   baseURL: API_URL,
@@ -17,9 +18,7 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 export default api;
