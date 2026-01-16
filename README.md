@@ -137,9 +137,8 @@ A modern, enterprise-grade feedback and project review platform with an **iOS-in
 
 For questions, issues, or contributions:
 
-- **Email**: support@swarmfeedback.com
+- **Email**: gladden8848@gmail.com
 - **GitHub Issues**: [Create an issue](https://github.com/swarm-feedback/issues)
-- **Documentation**: See `/documentation` folder
 
 ---
 
