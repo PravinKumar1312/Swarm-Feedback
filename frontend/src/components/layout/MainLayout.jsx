@@ -13,8 +13,9 @@ const MainLayout = ({ children }) => {
     useEffect(() => {
         let stompClient = null;
         if (currentUser?.id) {
-            // NOTE: In production, URL should be dynamic
-            const socket = new SockJS('http://localhost:8082/ws/notifications');
+            // Dynamic URL for production
+            const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8082';
+            const socket = new SockJS(`${baseUrl}/ws/notifications`);
             stompClient = Stomp.over(socket);
             stompClient.debug = () => { }; // Disable debug logs
 
