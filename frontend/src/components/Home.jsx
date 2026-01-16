@@ -143,36 +143,36 @@ const Home = () => {
                 <p className="text-gray-400">Here's what's happening with your {isReviewer ? 'reviews' : 'projects'}.</p>
             </header>
 
-            <div className={`grid grid-cols-1 ${isReviewer ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-6`}>
+            <div className={`grid grid-cols-1 ${isReviewer ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-6 animate-fade-in-up`}>
 
                 {/* CARD 1: Total Projects (Submitter) or Feedback Given (Reviewer) */}
-                <Card className="p-6 bg-white/5 border-white/10">
+                <Card className="p-6 group">
                     <div className="flex items-center gap-4">
-                        <div className={`p-3 rounded-full ${isReviewer ? 'bg-purple-500/20 text-purple-400' : 'bg-blue-500/20 text-blue-400'}`}>
-                            {isReviewer ? <MessageSquare size={24} /> : <FileText size={24} />}
+                        <div className={`p-4 rounded-2xl ${isReviewer ? 'bg-gradient-to-br from-purple-500/30 to-purple-600/20' : 'bg-gradient-to-br from-blue-500/30 to-blue-600/20'} backdrop-blur-sm`}>
+                            {isReviewer ? <MessageSquare size={28} className="text-purple-300" /> : <FileText size={28} className="text-blue-300" />}
                         </div>
                         <div>
-                            <p className="text-gray-400 text-sm">{isReviewer ? 'Feedback Given' : 'Total Projects'}</p>
-                            <p className="text-2xl font-bold text-white">{isReviewer ? stats.totalFeedback : stats.totalSubmissions}</p>
+                            <p className="text-gray-400 text-sm font-medium">{isReviewer ? 'Feedback Given' : 'Total Projects'}</p>
+                            <p className="text-3xl font-bold text-white mt-1">{isReviewer ? stats.totalFeedback : stats.totalSubmissions}</p>
                         </div>
                     </div>
                 </Card>
 
                 {/* CARD 2: Feedback Received (Submitter) or Review Distribution (Reviewer) */}
-                <Card className="p-6 bg-white/5 border-white/10">
+                <Card className="p-6 group">
                     {isReviewer ? (
-                        <div className="flex flex-col gap-2">
-                            <p className="text-gray-400 text-sm mb-1">Value of the review</p>
+                        <div className="flex flex-col gap-3">
+                            <p className="text-gray-400 text-sm font-medium mb-1">Review Distribution</p>
                             <ReviewPieChart distribution={stats.reviewDistribution} />
                         </div>
                     ) : (
                         <div className="flex items-center gap-4">
-                            <div className="p-3 rounded-full bg-purple-500/20 text-purple-400">
-                                <MessageSquare size={24} />
+                            <div className="p-4 rounded-2xl bg-gradient-to-br from-purple-500/30 to-purple-600/20 backdrop-blur-sm">
+                                <MessageSquare size={28} className="text-purple-300" />
                             </div>
                             <div>
-                                <p className="text-gray-400 text-sm">Feedback Received</p>
-                                <p className="text-2xl font-bold text-white">{stats.totalFeedback}</p>
+                                <p className="text-gray-400 text-sm font-medium">Feedback Received</p>
+                                <p className="text-3xl font-bold text-white mt-1">{stats.totalFeedback}</p>
                             </div>
                         </div>
                     )}
@@ -182,16 +182,19 @@ const Home = () => {
 
             </div>
 
-            <section>
+            <section className="mt-8">
                 <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-                    <Sparkles className="text-yellow-400" size={20} /> Recent Activity
+                    <Sparkles className="text-yellow-400" size={24} /> Recent Activity
                 </h2>
-                <div className="space-y-4">
+                <div className="space-y-3">
                     {stats.recentActivity.length > 0 ? (
                         stats.recentActivity.map((activity, index) => (
-                            <Card key={index} className="p-4 flex items-center justify-between bg-white/5 border-white/10 hover:bg-white/10 transition-colors">
+                            <Card 
+                                key={index} 
+                                className="p-5 flex items-center justify-between group cursor-pointer"
+                            >
                                 <div className="flex items-center gap-4">
-                                    <div className={`w-2 h-2 rounded-full ${activity.type === 'submission' ? 'bg-blue-400' : 'bg-purple-400'}`}></div>
+                                    <div className={`w-3 h-3 rounded-full ${activity.type === 'submission' ? 'bg-gradient-to-r from-blue-400 to-blue-500' : 'bg-gradient-to-r from-purple-400 to-purple-500'} shadow-lg`}></div>
                                     <div>
                                         <p className="text-white font-medium">
                                             {activity.type === 'submission'
@@ -200,13 +203,15 @@ const Home = () => {
                                                     ? `Reviewed project: "${activity.title}"`
                                                     : `New feedback received`}
                                         </p>
-                                        <p className="text-xs text-gray-500">{new Date(activity.date).toLocaleDateString()}</p>
+                                        <p className="text-xs text-gray-400 mt-1">{new Date(activity.date).toLocaleDateString()}</p>
                                     </div>
                                 </div>
                             </Card>
                         ))
                     ) : (
-                        <p className="text-gray-500 italic">No recent activity to show.</p>
+                        <Card className="p-8 text-center">
+                            <p className="text-gray-400 italic">No recent activity to show.</p>
+                        </Card>
                     )}
                 </div>
             </section>

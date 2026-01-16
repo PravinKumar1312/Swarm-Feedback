@@ -60,7 +60,7 @@ const MainLayout = ({ children }) => {
 
             <Sidebar isCollapsed={isCollapsed} toggleCollapsed={() => setIsCollapsed(!isCollapsed)} />
 
-            <main className={`flex-1 min-h-screen relative z-10 transition-all duration-300 ${isCollapsed ? 'md:ml-20' : 'md:ml-64'}`}>
+            <main className="flex-1 min-h-screen relative z-10 transition-all duration-300 md:ml-28">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-20 md:pt-12">
                     {children}
                 </div>

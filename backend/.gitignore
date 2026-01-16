@@ -32,14 +32,47 @@ build/
 ### VS Code ###
 .vscode/
 
-### Environment Variables ###
+### Environment Variables & Secrets ###
 .env
 .env.local
 .env.*
+application-prod.properties
+application-production.properties
+application-secret.properties
+*-secret.properties
+
+### Security ###
+*.key
+*.pem
+*.crt
+*.p12
+*.jks
+*.keystore
+*.truststore
+credentials.json
+serviceAccountKey.json
 
 ### Logs ###
 logs/
 *.log
+backend.log
+run_log*.txt
+build_log*.txt
+debug*.log
+
+### Database ###
+*.db
+*.sqlite
+*.sql.gz
+dump.sql
+backup.sql
+mongodb-dump/
+
+### Uploads & User Content ###
+uploads/
+help-uploads/
+temp-uploads/
+static/uploads/
 
 ### OS Files ###
 .DS_Store

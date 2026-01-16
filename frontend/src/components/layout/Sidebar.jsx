@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Home, PlusCircle, History, User, LogOut, FileText, MessageSquare, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Menu, X, Home, PlusCircle, History, User, LogOut, FileText, MessageSquare, Hexagon, ChevronRight } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -18,110 +18,169 @@ const Sidebar = ({ isCollapsed, toggleCollapsed }) => {
         {
             path: isAdmin ? '/dashboard?tab=home' : '/dashboard',
             label: 'Home',
-            icon: <Home size={20} />,
-            isActive: (path) => location.pathname === '/dashboard' && (!location.search || location.search.includes('tab=home') || (!isAdmin && !location.search))
+            icon: <Home size={22} />,
+            color: '#d946ef' // Neon Pink
         },
-
         ...(isAdmin ? [
-            { path: '/dashboard?tab=projects', label: 'Projects', icon: <FileText size={20} />, isActive: () => location.search.includes('tab=projects') },
-            { path: '/dashboard?tab=feedback', label: 'Feedback', icon: <MessageSquare size={20} />, isActive: () => location.search.includes('tab=feedback') },
-            { path: '/dashboard?tab=users', label: 'Users', icon: <User size={20} />, isActive: () => location.search.includes('tab=users') },
+            { path: '/dashboard?tab=projects', label: 'Projects', icon: <FileText size={22} />, color: '#8b5cf6' }, // Electric Purple
+            { path: '/dashboard?tab=feedback', label: 'Feedback', icon: <MessageSquare size={22} />, color: '#0ea5e9' }, // Vivid Blue
+            { path: '/dashboard?tab=users', label: 'Users', icon: <User size={22} />, color: '#06b6d4' }, // Neon Cyan
         ] : []),
-
         ...((isSubmitter) ? [
-            { path: '/submit', label: 'Submit', icon: <PlusCircle size={20} /> },
-            { path: '/history', label: 'History', icon: <History size={20} /> }
+            { path: '/submit', label: 'Submit', icon: <PlusCircle size={22} />, color: '#f97316' }, // Orange
+            { path: '/history', label: 'History', icon: <History size={22} />, color: '#a855f7' } // Purple
         ] : []),
-
         ...(isReviewer && !isSubmitter && !isAdmin ? [
-            { path: '/history', label: 'My Reviews', icon: <History size={20} /> }
+            { path: '/history', label: 'My Reviews', icon: <History size={22} />, color: '#3b82f6' }
         ] : []),
-
         ...(!isAdmin ? [
-            { path: '/contact-help', label: 'Help', icon: <MessageSquare size={20} /> },
-            { path: '/profile', label: 'Profile', icon: <User size={20} /> }
+            { path: '/contact-help', label: 'Help', icon: <MessageSquare size={22} />, color: '#ec4899' },
+            { path: '/profile', label: 'Profile', icon: <User size={22} />, color: '#6366f1' }
         ] : []),
     ];
 
     const isLinkActive = (item) => {
-        if (item.isActive) return item.isActive(item.path);
-        return location.pathname === item.path;
+         // Handle query params for accurate active state
+         if (item.path.includes('?')) {
+            return location.pathname + location.search === item.path;
+         }
+         return location.pathname === item.path && (!location.search || item.path === '/dashboard');
     };
 
     return (
         <>
-            {/* Mobile Hamburger Button */}
-            <button
+            {/* Mobile Hamburger - Floating Orb */}
+            <motion.button
+                whileHover={{ scale: 1.1, rotate: 90 }}
+                whileTap={{ scale: 0.9 }}
                 onClick={toggleMobileMenu}
-                className="fixed top-4 left-4 z-50 p-2 bg-black/50 backdrop-blur-md rounded-lg border border-white/10 text-white hover:bg-white/10 transition-colors md:hidden"
+                className="fixed top-4 left-4 z-50 p-3 glass-strong rounded-full text-white shadow-lg md:hidden border border-white/10"
             >
                 {isMobileOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+            </motion.button>
 
-            {/* Sidebar Container */}
+            {/* Neural Dock Container */}
             <AnimatePresence>
                 {(isMobileOpen || window.innerWidth >= 768) && (
                     <motion.div
                         initial={{ x: -100, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
                         exit={{ x: -100, opacity: 0 }}
-                        className={`fixed top-0 left-0 h-full bg-slate-900/95 backdrop-blur-xl border-r border-white/10 z-40 flex flex-col transition-all duration-300 ${!isMobileOpen ? 'hidden md:flex' : 'flex'
-                            } ${isCollapsed ? 'md:w-20' : 'md:w-64'} w-64`}
+                        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                        className={`fixed left-4 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-6
+                            ${!isMobileOpen ? 'hidden md:flex' : 'flex'}
+                        `}
                     >
-                        <div className={`p-6 border-b border-white/10 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
-                            {!isCollapsed && (
-                                <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500 whitespace-nowrap overflow-hidden">
-                                    Swarm
-                                </h2>
-                            )}
-                            {isCollapsed && (
-                                <span className="text-xl font-bold text-blue-400">S</span>
-                            )}
-
-                            {/* Desktop Collapse Toggle */}
-                            <button
-                                onClick={toggleCollapsed}
-                                className="hidden md:flex p-1 hover:bg-white/10 rounded text-gray-400 transition-colors"
+                        {/* The Dock Pill */}
+                        <div className="glass-strong rounded-[2rem] p-3 flex flex-col items-center gap-4 shadow-2xl border border-white/10 backdrop-blur-3xl relative overflow-visible">
+                            
+                            {/* Logo Orb */}
+                            <motion.div 
+                                className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20 mb-2 relative group cursor-pointer"
+                                whileHover={{ scale: 1.1, rotate: 180 }}
+                                transition={{ type: "spring", stiffness: 300 }}
                             >
-                                {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
-                            </button>
-                        </div>
+                                <Hexagon size={24} className="text-white fill-white/20" />
+                                {/* Glow Effect */}
+                                <div className="absolute inset-0 bg-cyan-400 blur-xl opacity-0 group-hover:opacity-40 transition-opacity duration-500" />
+                            </motion.div>
 
-                        <nav className="flex-1 p-4 space-y-2 overflow-x-hidden">
-                            {menuItems.map((item) => (
-                                <Link
-                                    key={item.label}
-                                    to={item.path}
-                                    onClick={() => setIsMobileOpen(false)}
-                                    title={isCollapsed ? item.label : ''}
-                                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all whitespace-nowrap ${isLinkActive(item)
-                                        ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 shadow-[0_0_15px_rgba(59,130,246,0.2)]'
-                                        : 'text-gray-400 hover:bg-white/5 hover:text-white'
-                                        } ${isCollapsed ? 'justify-center' : ''}`}
+                            {/* Separator */}
+                            <div className="w-8 h-[1px] bg-white/10 rounded-full" />
+
+                            {/* Navigation Items */}
+                            <nav className="flex flex-col gap-3">
+                                {menuItems.map((item) => {
+                                    const active = isLinkActive(item);
+                                    return (
+                                        <div key={item.label} className="relative group flex items-center">
+                                            
+                                            {/* Tooltip Label (Floats right) */}
+                                            <div className="absolute left-full ml-4 px-3 py-1.5 glass rounded-xl text-sm font-medium text-white opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300 pointer-events-none whitespace-nowrap z-50 border border-white/10 shadow-xl">
+                                                {item.label}
+                                                {/* Arrow */}
+                                                <div className="absolute right-full top-1/2 -translate-y-1/2 -mr-1 border-4 border-transparent border-r-white/10" />
+                                            </div>
+
+                                            <Link to={item.path} onClick={() => setIsMobileOpen(false)}>
+                                                <motion.div
+                                                    className={`relative w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300 ${
+                                                        active ? 'text-white' : 'text-gray-400 hover:text-white'
+                                                    }`}
+                                                    whileHover={{ scale: 1.15 }}
+                                                    whileTap={{ scale: 0.95 }}
+                                                >
+                                                    {/* Active Liquid Background */}
+                                                    {active && (
+                                                        <motion.div
+                                                            layoutId="active-pill"
+                                                            className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-white/20 shadow-inner"
+                                                            initial={false}
+                                                            transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                                                        >
+                                                            {/* Active Glow Dot */}
+                                                            <div 
+                                                                className="absolute -right-1 top-1/2 -translate-y-1/2 w-1.5 h-6 rounded-full blur-[1px]"
+                                                                style={{ backgroundColor: item.color }}
+                                                            />
+                                                            <div 
+                                                                className="absolute -right-1 top-1/2 -translate-y-1/2 w-1.5 h-6 rounded-full opacity-50 blur-md"
+                                                                style={{ backgroundColor: item.color }}
+                                                            />
+                                                        </motion.div>
+                                                    )}
+
+                                                    {/* The Icon */}
+                                                    <div className="relative z-10">
+                                                        {item.icon}
+                                                    </div>
+                                                </motion.div>
+                                            </Link>
+                                        </div>
+                                    );
+                                })}
+                            </nav>
+
+                            {/* Separator */}
+                            <div className="w-8 h-[1px] bg-white/10 rounded-full mt-auto" />
+
+                            {/* User Profile & Logout */}
+                            <div className="flex flex-col gap-3 mt-2">
+                                {/* Profile Mini-Orb */}
+                                <div className="w-10 h-10 rounded-full glass flex items-center justify-center text-sm font-bold text-white border border-white/10 hover:border-white/30 transition-colors cursor-pointer group relative">
+                                    {currentUser?.username?.charAt(0).toUpperCase()}
+                                    <div className="absolute right-0 bottom-0 w-3 h-3 bg-green-500 rounded-full border-2 border-[#0f172a]" />
+                                    
+                                    {/* User Tooltip */}
+                                    <div className="absolute left-full ml-4 bottom-0 px-4 py-2 glass-strong rounded-2xl text-left opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300 pointer-events-none min-w-[140px] border border-white/10">
+                                        <p className="text-white font-bold text-sm">{currentUser?.username}</p>
+                                        <p className="text-xs text-gray-400">{currentUser?.email}</p>
+                                    </div>
+                                </div>
+
+                                {/* Logout Button */}
+                                <motion.button
+                                    onClick={logout}
+                                    whileHover={{ scale: 1.1, rotate: -15, color: '#ef4444' }}
+                                    whileTap={{ scale: 0.9 }}
+                                    className="w-10 h-10 rounded-2xl flex items-center justify-center text-gray-400 hover:bg-white/5 transition-colors"
+                                    title="Logout"
                                 >
-                                    {item.icon}
-                                    {!isCollapsed && <span className="font-medium">{item.label}</span>}
-                                </Link>
-                            ))}
-                        </nav>
+                                    <LogOut size={20} />
+                                </motion.button>
+                            </div>
 
-                        <div className="p-4 border-t border-white/10">
-                            <button
-                                onClick={logout}
-                                title={isCollapsed ? "Logout" : ""}
-                                className={`flex items-center gap-3 px-4 py-3 w-full rounded-xl text-red-400 hover:bg-red-500/10 transition-colors whitespace-nowrap ${isCollapsed ? 'justify-center' : ''}`}
-                            >
-                                <LogOut size={20} />
-                                {!isCollapsed && <span className="font-medium">Logout</span>}
-                            </button>
                         </div>
                     </motion.div>
                 )}
             </AnimatePresence>
 
-            {/* Overlay for mobile */}
+            {/* Backdrop for mobile */}
             {isMobileOpen && (
-                <div
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
                     className="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 md:hidden"
                     onClick={() => setIsMobileOpen(false)}
                 />

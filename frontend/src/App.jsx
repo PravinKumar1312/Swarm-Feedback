@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import LoadingScreen from './components/LoadingScreen';
 import Login from './components/Login';
 import Register from './components/Register';
 import ForgotPassword from './components/ForgotPassword';
@@ -15,6 +16,7 @@ import Profile from './components/Profile';
 import ContactHelp from './components/ContactHelp';
 import AdminDashboard from './components/AdminDashboard';
 import { useAuth } from './context/AuthContext';
+import { AnimatePresence } from 'framer-motion';
 
 // Helper component to route based on role
 const DashboardRouter = () => {
@@ -43,6 +45,17 @@ const DashboardHome = () => {
 };
 
 function App() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate initial app loading
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2000); // Show loading screen for 2.0s
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <AuthProvider>
       <div className="min-h-screen bg-slate-900 text-white">
@@ -50,94 +63,102 @@ function App() {
           position="top-right"
           toastOptions={{
             style: {
-              background: '#1e293b',
+              background: 'linear-gradient(135deg, rgba(255, 107, 157, 0.1), rgba(192, 111, 255, 0.1))',
               color: '#fff',
-              border: '1px solid rgba(255,255,255,0.1)',
+              border: '1px solid rgba(255, 107, 157, 0.3)',
+              backdropFilter: 'blur(20px)',
             },
             success: {
               iconTheme: {
-                primary: '#4ade80',
+                primary: '#4FACFE',
                 secondary: '#1e293b',
               },
             },
             error: {
               iconTheme: {
-                primary: '#f87171',
+                primary: '#FF6B9D',
                 secondary: '#1e293b',
               },
             },
           }}
         />
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
+        
+        <AnimatePresence mode="wait">
+          {loading ? (
+            <LoadingScreen key="loading" onComplete={() => setLoading(false)} />
+          ) : (
+            <Routes key="routes">
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
 
-          {/* Root route redirects based on role */}
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <DashboardRouter />
-              </ProtectedRoute>
-            }
-          />
+              {/* Root route redirects based on role */}
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute>
+                    <DashboardRouter />
+                  </ProtectedRoute>
+                }
+              />
 
-          {/* Submitter Routes wrapped in MainLayout */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <MainLayout>
-                  <DashboardHome />
-                </MainLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/submit"
-            element={
-              <ProtectedRoute>
-                <MainLayout>
-                  <SubmitProject />
-                </MainLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/history"
-            element={
-              <ProtectedRoute>
-                <MainLayout>
-                  <History />
-                </MainLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <MainLayout>
-                  <Profile />
-                </MainLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/contact-help"
-            element={
-              <ProtectedRoute>
-                <MainLayout>
-                  <ContactHelp />
-                </MainLayout>
-              </ProtectedRoute>
-            }
-          />
+              {/* Submitter Routes wrapped in MainLayout */}
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <MainLayout>
+                      <DashboardHome />
+                    </MainLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/submit"
+                element={
+                  <ProtectedRoute>
+                    <MainLayout>
+                      <SubmitProject />
+                    </MainLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/history"
+                element={
+                  <ProtectedRoute>
+                    <MainLayout>
+                      <History />
+                    </MainLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <MainLayout>
+                      <Profile />
+                    </MainLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/contact-help"
+                element={
+                  <ProtectedRoute>
+                    <MainLayout>
+                      <ContactHelp />
+                    </MainLayout>
+                  </ProtectedRoute>
+                }
+              />
 
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+              <Route path="*" element={<Navigate to="/login" replace />} />
+            </Routes>
+          )}
+        </AnimatePresence>
       </div>
     </AuthProvider>
   );

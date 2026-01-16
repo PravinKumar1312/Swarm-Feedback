@@ -39,16 +39,53 @@ coverage/
 .env.production.local
 .env*.local
 *.env
-# Keep application.properties in git if it doesn't contain production secrets
-# application.properties
-# application-*.properties
-# !application.properties.example
+config.env
+secrets.env
+
+# Application Properties (Sensitive)
+application-prod.properties
+application-production.properties
+application-secret.properties
+*-secret.properties
+*-secrets.properties
+
+# Security Keys & Certificates
 *.key
 *.pem
 *.crt
 *.p12
 *.jks
 *.pfx
+*.keystore
+*.truststore
+id_rsa
+id_rsa.pub
+*.ppk
+
+# API Keys & Tokens
+*apikey*
+*api-key*
+*api_key*
+*.token
+*secret*
+*password*
+credentials.json
+client_secret*.json
+firebase-adminsdk*.json
+serviceAccountKey.json
+
+# Database Credentials
+database.yml
+database.json
+db-config.json
+mongodb-credentials.json
+
+# AWS & Cloud Credentials
+.aws/
+.azure/
+.gcloud/
+*credentials.csv
+*accessKeys.csv
 
 # --- Logs ---
 logs/

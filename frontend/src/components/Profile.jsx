@@ -138,9 +138,9 @@ const Profile = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <Card className="p-8 backdrop-blur-xl bg-black/40 border-white/10 shadow-2xl">
+                    <Card className="p-8 glass-strong shadow-2xl">
                         <div className="flex justify-between items-center mb-8 border-b border-white/10 pb-6">
-                            <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
+                            <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">
                                 User Profile
                             </h1>
                             {!editing && (
@@ -152,17 +152,20 @@ const Profile = () => {
 
                         <div className="grid md:grid-cols-3 gap-8">
                             <div className="md:col-span-1 flex flex-col items-center text-center">
-                                <div className="w-32 h-32 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 border-2 border-white/20 flex items-center justify-center mb-4 shadow-[0_0_20px_rgba(59,130,246,0.3)] overflow-hidden">
-                                    {user.profilePic ? (
-                                        <img src={user.profilePic} alt={user.username} className="w-full h-full object-cover" />
-                                    ) : (
-                                        <User size={64} className="text-gray-300" />
-                                    )}
+                                <div className="relative w-36 h-36 rounded-full mb-4 group">
+                                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 opacity-75 blur-md group-hover:opacity-100 transition-opacity"></div>
+                                    <div className="relative w-full h-full rounded-full bg-gradient-to-br from-blue-500/30 to-purple-500/30 border-2 border-white/20 flex items-center justify-center overflow-hidden backdrop-blur-sm">
+                                        {user.profilePic ? (
+                                            <img src={user.profilePic} alt={user.username} className="w-full h-full object-cover" />
+                                        ) : (
+                                            <User size={72} className="text-gray-300" />
+                                        )}
+                                    </div>
                                 </div>
                                 <h2 className="text-xl font-bold text-white mb-1">{user.username}</h2>
                                 <div className="flex flex-wrap justify-center gap-2 mt-2">
                                     {user.roles && user.roles.map(role => (
-                                        <span key={role} className="px-2 py-1 rounded text-xs font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                                        <span key={role} className="px-3 py-1 rounded-full text-xs font-bold glass border border-blue-500/30 text-blue-300">
                                             {role.replace('ROLE_', '')}
                                         </span>
                                     ))}
@@ -179,7 +182,7 @@ const Profile = () => {
                                                     type="text"
                                                     value={formData.name}
                                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                                                    className="w-full px-4 py-3 glass rounded-2xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-500"
                                                     placeholder="Your Name"
                                                 />
                                             </div>
@@ -189,7 +192,7 @@ const Profile = () => {
                                                     type="number"
                                                     value={formData.age}
                                                     onChange={(e) => setFormData({ ...formData, age: e.target.value })}
-                                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                                                    className="w-full px-4 py-3 glass rounded-2xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-500"
                                                     placeholder="Age"
                                                 />
                                             </div>
@@ -202,7 +205,7 @@ const Profile = () => {
                                                     type="text"
                                                     value={formData.regNumber}
                                                     onChange={(e) => setFormData({ ...formData, regNumber: e.target.value })}
-                                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                                                    className="w-full px-4 py-3 glass rounded-2xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-500"
                                                     placeholder="Reg Number"
                                                 />
                                             </div>
@@ -221,7 +224,7 @@ const Profile = () => {
                                                 type="text"
                                                 value={formData.skills}
                                                 onChange={(e) => setFormData({ ...formData, skills: e.target.value })}
-                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                                                className="w-full px-4 py-3 glass rounded-2xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-500"
                                                 placeholder="Java, React, Spring Boot"
                                             />
                                         </div>
@@ -231,7 +234,7 @@ const Profile = () => {
                                             <textarea
                                                 value={formData.bio}
                                                 onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                                                className="w-full h-32 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all resize-none"
+                                                className="w-full h-32 px-4 py-3 glass rounded-2xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none placeholder-gray-500"
                                                 placeholder="Tell us about yourself..."
                                             />
                                         </div>
